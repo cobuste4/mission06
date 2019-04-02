@@ -1,7 +1,6 @@
 package edu.isu.cs.cs3308.structures.impl;
 
 import edu.isu.cs.cs3308.structures.Set;
-
 import java.util.Iterator;
 
 public class SetImpl implements Set {
