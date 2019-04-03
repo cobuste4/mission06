@@ -24,15 +24,15 @@ public class Driver {
         }
 
         int counter = 1;
-        for (String word : words){
+        for (String word : words) {
             List<String> answer = checker.check(word);
 
-            //If size is more than one, that means the word is misspelled.
-            if (answer.size() > 1){
+            if (answer.size() > 1) {
                 StringBuilder sb = new StringBuilder();
-                for (int i = 1; i < answer.size(); i++){
-                    sb.append(answer.get(i) + ", ");
+                for (int i = 1; i < (answer.size()); i++) {
+                    if (i < 6) sb.append(answer.get(i) + ", ");
                 }
+
                 String formatted = sb.substring(0, sb.length() - 2);
 
                 if (counter == 1) System.out.println("Misspelled Words:");
