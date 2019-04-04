@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Driver {
     /**
      * Runs the program
+     * @author Steve Coburn
      *
      * @param args the command line arguments
      */

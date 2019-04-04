@@ -2,89 +2,109 @@ package edu.isu.cs.cs3308.structures.impl;
 
 import edu.isu.cs.cs3308.structures.Set;
 import java.util.Iterator;
+import java.util.ArrayList;
 
-public class SetImpl implements Set {
-    /**
-     * Add element e to the set, unless e already exists in the set or e is null.
-     *
-     * @param e Item to add to the set
-     */
-    @Override
-    public void add(Object e) {
+/** A HashSet implementation of a Set
+ *
+ * @author Steve Coburn
+ *
+ * @param <E> Datatype of the data to use
+ */
+public class SetImpl<E> implements Set<E> {
 
+    private int size = 0;
+    private int primeNum = 1777;
+    private ArrayList<E>[] buckets;
+
+    public SetImpl() {
+        buckets = new ArrayList[primeNum];
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i] = new ArrayList<>();
+        }
     }
 
-    /**
-     * Remove element e from the set, unless e does not exist in the set, or e is null
+    /** Hashes the value given as it relates to a prime number
      *
-     * @param e Item to remove from the set
+     * @param e the data to hash
+     * @return hashed value
      */
-    @Override
-    public void remove(Object e) {
-
+    private int hash(E e) {
+        return (e.hashCode() & 0x7fffffff) % primeNum;
     }
 
-    /**
-     * Test whether e is a member of this set.
-     *
-     * @param e item to check membership of
-     * @return true if e is a member of this set, false if not or e is null.
-     */
     @Override
-    public boolean contains(Object e) {
-        return false;
+    public void add(E e) {
+        if (e != null){
+            ArrayList<E> tempBucket = buckets[hash(e)];
+            if (!this.contains(e))
+                tempBucket.add(e);
+            size++;
+        }
     }
 
-    /**
-     * Method to generate an iterator to iterate across the contents of the set.
-     *
-     * @return Iterator for this set.
-     */
     @Override
-    public Iterator iterator() {
-        return null;
+    public void remove(E e) {
+        if (e != null) {
+            ArrayList<E> tempBucket = buckets[hash(e)];
+            tempBucket.remove(e);
+            size--;
+        }
     }
 
-    /**
-     * Check if the set is empty
-     *
-     * @return true if there are no items in the set, false otherwise
-     */
+    @Override
+    public boolean contains(E e) {
+        if (e == null) return false;
+        return buckets[hash(e)].contains(e);
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        ArrayList<E> list = new ArrayList<E>();
+        for (int i = 0; i < buckets.length; i++) {
+            list.addAll(buckets[i]);
+        }
+        return list.iterator();
+    }
+
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
-    /**
-     * Adds all items from Set s to this set, if those items are not already in this set.
-     * This is equivalent to the set union operation.
-     *
-     * @param s Set containing the items to be added to this set.
-     */
     @Override
-    public void addAll(Set s) {
-
+    public void addAll(Set<E> s) {
+        Iterator<E> looper = s.iterator();
+        E tempData;
+        while (!s.isEmpty()){
+            tempData = looper.next();
+            add(tempData);
+            size++;
+        }
     }
 
-    /**
-     * Removes all items from this set, which are not items contained in the provided set.
-     * This is equivalent to the set intersection operation.
-     *
-     * @param s The set defining which items are to be kept in this set.
-     */
     @Override
-    public void retainAll(Set s) {
-
+    public void retainAll(Set<E> s) {
+        Iterator<E> looper = s.iterator();
+        E tempData;
+        while (!s.isEmpty()){
+            tempData = looper.next();
+            if (!s.contains(tempData)){
+                this.remove(tempData);
+                size--;
+            }
+        }
     }
 
-    /**
-     * Removes all items found in the provided set from this set.
-     * This is equivalent to the set difference operation.
-     *
-     * @param s Set defining the items to be removed from this set.
-     */
     @Override
-    public void removeAll(Set s) {
-
+    public void removeAll(Set<E> s) {
+        Iterator<E> looper = s.iterator();
+        E tempData;
+        while (!s.isEmpty()){
+            tempData = looper.next();
+            if (s.contains(tempData)){
+                this.remove(tempData);
+            }
+        }
+        size = 0;
     }
 }
